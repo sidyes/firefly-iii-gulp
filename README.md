@@ -12,7 +12,7 @@ Feel free to use the gulp tasks for your firefly application.
     SSH_HOST=<your server IP>
     SSH_USER=<SSH user>V
     SSH_PW=<SSH user password>
-    SSH_PORT=<SSH port > # optional (default: 22)‚
+    SSH_PORT=<SSH port > # optional (default: 22)
 
     # DB Connection Information
     DB_USER=<database user>

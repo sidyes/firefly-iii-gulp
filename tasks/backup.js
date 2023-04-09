@@ -4,8 +4,8 @@ var gulp = require("gulp");
 var path = require("path");
 var exec = require("child_process").exec;
 
-const dotenvPath = path.join(__dirname, '..', '.env');
-require('dotenv').config({path: dotenvPath});
+const dotenvPath = path.join(__dirname, "..", ".env");
+require("dotenv").config({ path: dotenvPath });
 
 var GulpSSH = require("gulp-ssh");
 var Client = require("ssh2-sftp-client");
@@ -21,7 +21,7 @@ const config = {
   dbHost: process.env.DB_HOST || "localhost",
   dbName: process.DB_NAME,
   fireflyPath: process.env.FIREFLY_PATH,
-  backupPath: process.env.BACKUP_PATH
+  backupPath: process.env.BACKUP_PATH,
 };
 
 var gulpSSH = new GulpSSH({
@@ -36,22 +36,24 @@ const destSqlDump = `${config.fireflyPath}/storage/database/dump.sql`;
 
 var folderName = "";
 
-gulp.task("create-backup-folder", (cb) => {
+function createBackupFolder(cb) {
   const date = new Date();
-  folderName = `${config.backupPath}/${date.getFullYear()}-${date.getMonth()}-${date.getDate()}--${date.getTime()}`;
+  folderName = `${
+    config.backupPath
+  }/${date.getFullYear()}-${date.getMonth()}-${date.getDate()}--${date.getTime()}`;
   console.log("0) Creating backupg folder...");
 
   exec(`mkdir ${folderName}`, (err, stdout, stderr) => cb(err));
-});
+}
 
-gulp.task("create-mysql-dump", () => {
+function createMySqlDump() {
   console.log("1) Creating SQL dump...");
   return gulpSSH.shell(
     `mysqldump -u ${config.dbUser} --password='${config.dbPw}' ${config.dbName} > ${destSqlDump}`
   );
-});
+}
 
-gulp.task("download-backup", () => {
+function downloadBackup() {
   return sftp
     .connect(config)
     .then(() => {
@@ -84,19 +86,9 @@ gulp.task("download-backup", () => {
     .catch((err) => {
       console.log(err, "catch error");
     });
-});
-
-gulp.task("delete-mysql-dump", () => {
-  console.log("6) Deleting SQL dump...");
-  return gulpSSH.exec(
-    [
-      `mysqldump -u ${config.dbUser} -p' ${config.dbPw} -h ${config.dbHost} ${config.dbName}`,
-    ],
-    { filePath: `${config.fireflyPath}/storage/database/dump.sql` }
-  );
-});
+}
 
 gulp.task(
   "backup",
-  gulp.series("create-backup-folder", "create-mysql-dump", "download-backup")
+  gulp.series(createBackupFolder, createMySqlDump, downloadBackup)
 );
