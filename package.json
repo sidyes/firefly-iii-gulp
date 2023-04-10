@@ -11,6 +11,7 @@
   "devDependencies": {
     "dotenv": "^16.0.3",
     "gulp": "^4.0.2",
+    "gulp-prompt": "^1.2.0",
     "gulp-ssh": "^0.7.0",
     "require-dir": "^1.2.0",
     "ssh2-sftp-client": "^9.0.4"

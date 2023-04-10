@@ -4,12 +4,12 @@ var gulp = require("gulp");
 var path = require("path");
 var exec = require("child_process").exec;
 
-const dotenvPath = path.join(__dirname, "..", ".env");
-require("dotenv").config({ path: dotenvPath });
-
 var GulpSSH = require("gulp-ssh");
 var Client = require("ssh2-sftp-client");
 var sftp = new Client();
+
+const dotenvPath = path.join(__dirname, "..", ".env");
+require("dotenv").config({ path: dotenvPath });
 
 const config = {
   host: process.env.SSH_HOST,
@@ -19,7 +19,7 @@ const config = {
   dbUser: process.env.DB_USER,
   dbPw: process.env.DB_PW,
   dbHost: process.env.DB_HOST || "localhost",
-  dbName: process.DB_NAME,
+  dbName: process.env.DB_NAME,
   fireflyPath: process.env.FIREFLY_PATH,
   backupPath: process.env.BACKUP_PATH,
 };

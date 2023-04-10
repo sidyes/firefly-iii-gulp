@@ -1,12 +1,12 @@
 # Scripts for Firefly III
 
 This repository contains useful scripts for the orchestration of a [firefly iii instance](https://www.firefly-iii.org/).
-Feel free to use the gulp tasks for your firefly application.
+Feel free to use the gulp tasks for your personal application.
 
 ## Getting Started
 
 1. Install via `yarn`
-2. Create `.env` in the root of this repository with the following content:
+2. Create a `.env`file in the root of this repository with the following content:
   ```
     # SSH Connection Information
     SSH_HOST=<your server IP>
@@ -29,17 +29,26 @@ Feel free to use the gulp tasks for your firefly application.
 
 `gulp backup`
 
-Performs a [backup](https://docs.firefly-iii.org/firefly-iii/advanced-installation/backup/) all relevant files of your Firefly III application as follows:
+Performs a [backup](https://docs.firefly-iii.org/firefly-iii/advanced-installation/backup/) of all relevant files of your firefly iii application as follows:
 
 - Creates a new folder for your backup in XXX
-- Copies `.env` of your Firefly application
+- Copies `.env` of your firefly application
 - Creates a SQL dump and moves it to `storage/database`
 - Copies `/storage/database` and `storage/uploads` to the backup folder
 
 
 ## Restore
 
-TBD
+`gulp restore`
+
+Restores files and database from [backup](#backup) at remote server:
+
+- Selects desired backup to restore via prompt
+- Copies `.env` to your firefly application
+- Copies `database` folder to `/storage/database`
+- Copies `upload` folder to `/storage/upload`
+- Restores database
+- Deletes database dump remotely
 
 ## Update Firefly III
 
