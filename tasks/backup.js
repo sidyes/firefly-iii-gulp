@@ -83,9 +83,7 @@ function downloadBackup() {
     .then(() => {
       return sftp.end();
     })
-    .catch((err) => {
-      console.log(err, "catch error");
-    });
+    .catch(console.error);
 }
 
 gulp.task(

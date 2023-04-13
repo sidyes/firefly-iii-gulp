@@ -91,9 +91,11 @@ function copyBackup() {
 
 function restoreDb() {
   console.log("4) Restoring database from SQL dump...");
-  return gulpSSH.shell(
-    `mysql -u ${config.dbUser} --password='${config.dbPw}' ${config.dbName} < ${config.fireflyPath}/storage/database/dump.sql`
-  );
+  return gulpSSH
+    .shell(
+      `mysql -u ${config.dbUser} --password='${config.dbPw}' ${config.dbName} < ${config.fireflyPath}/storage/database/dump.sql`
+    )
+    .on("ssh2Data", (data) => console.dir(data.toString()));
 }
 
 function deleteDump() {
@@ -106,9 +108,7 @@ function deleteDump() {
     .then(() => {
       return sftp.end();
     })
-    .catch((err) => {
-      console.log(err, "catch error");
-    });
+    .catch(console.error);
 }
 
 gulp.task(
