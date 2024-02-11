@@ -26,9 +26,23 @@ const appName = config.fireflyPath.substring(
   config.fireflyPath.lastIndexOf("/") + 1
 );
 
+// e.g. /var/www/firefly-iii -> /var/www
+const rootDir = config.fireflyPath.substring(
+  0,
+  config.fireflyPath.lastIndexOf("/")
+);
+
 function deleteOldVersion() {
+  console.log("0) Delete old firefly iii version/backup...");
   return gulpSSH
     .shell([`rm -r ${config.fireflyPath}-old`])
+    .on("ssh2Data", (data) => console.dir(data.toString()));
+}
+
+function deleteOldImporterVersion() {
+  console.log("0) Delete old firefly iii importer version/backup...");
+  return gulpSSH
+    .shell([`rm -r ${rootDir}/old-data-importer`])
     .on("ssh2Data", (data) => console.dir(data.toString()));
 }
 
@@ -54,6 +68,7 @@ function installNewVersion() {
 }
 
 function serveNextVersion() {
+  console.log("2) Run new firefly iii version...");
   return gulpSSH
     .shell([
       "cd /var/www",
@@ -74,8 +89,29 @@ function serveNextVersion() {
     .on("ssh2Data", (data) => console.dir(data.toString()));
 }
 
+function upgradeDataImporter() {
+  console.log("3) Install new firefly iii data-importer version...");
+
+  return gulpSSH
+    .shell([
+      'latestversion=$(curl -s https://api.github.com/repos/firefly-iii/data-importer/releases/latest | grep -oP \'"tag_name": "K(.*)(?=")\')',
+      "cd /var/www",
+      `yes | composer create-project firefly-iii/data-importer --no-dev --prefer-dist updated-data-importer $latestversion`,
+      `cp /var/www/data-importer/.env /var/www/updated-data-importer/.env`,
+      `mv /var/www/data-importer /var/www/old-data-importer`,
+      `mv /var/www/updated-data-importer /var/www/data-importer`,
+      `sudo chown -R www-data:www-data data-importer`,
+      `sudo chmod -R 775 data-importer/storage`,
+    ])
+    .on("ssh2Data", (data) => console.dir(data.toString()));
+}
+
 /** Gulp task upgrade */
 gulp.task(
   "upgrade",
   gulp.series(deleteOldVersion, installNewVersion, serveNextVersion)
+);
+gulp.task(
+  "upgrade-importer",
+  gulp.series(deleteOldImporterVersion, upgradeDataImporter)
 );

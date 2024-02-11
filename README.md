@@ -50,17 +50,29 @@ Restores files and database from [backup](#backup) at remote server:
 - Restores database
 - Deletes database dump remotely
 
-## Update Firefly III
+## Upgrade
+
+### Firefly III
 
 `gulp upgrade`
 
 Upgrades your firefly iii version to the newest one:
 
 - Deletes `/var/www/<your-app>-old` folder
-- Installs newest version under `/var/www/<your-app>-updated`
+- Installs newest version in `/var/www/<your-app>-updated`
 - Renames current `/var/www/<your-app>` to `/var/www/<your-app>-old`
 - Renames new `/var/www/<your-app>-updated` to `/var/www/<your-app>`
 - Updates folder permissions accordingly
 - Restars apache server
 
 Shoutout to [@pedrom34](https://github.com/pedrom34) and his [gist](https://gist.github.com/pedrom34/d1b8ab84e1e9ec7e8c6cbcc3cc51d663)
+
+### Data-Importer
+
+`gulp upgrade-importer`
+
+- Installs newest version in `/var/www/updated-data-importer`
+- Copies the current `.env` in the updated version
+- Moves the current data importer to `/var/www/old-data-importer`
+- Moves the updated data importer to `/var/www/data-importer`
+- Updates folder permissions accordingly
