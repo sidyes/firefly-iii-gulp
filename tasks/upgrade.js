@@ -61,7 +61,7 @@ function installNewVersion() {
       `php artisan cache:clear`,
       `php artisan migrate --seed`,
       `php artisan firefly-iii:upgrade-database`,
-      `php artisan passport:install`,
+      `php artisan passport:keys`,
       `php artisan cache:clear`,
     ])
     .on("ssh2Data", (data) => console.dir(data.toString()));
